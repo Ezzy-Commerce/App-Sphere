@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - AppSphere</title>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="AppSphere Logo">
+    <h1>AppSphere</h1>
+  </header>
+  <div class="container">
+    <h2>Create Your Account</h2>
+    <p>Join AppSphere today and start enjoying our services. Please fill in the details below to get started.</p>
+
+    <!-- Message Box for Registration Feedback -->
+    <div id="message-box"></div>
+
+    <!-- Registration Form -->
+    <form id="registration-form">
+      <div class="input-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" placeholder="Enter your username" required>
+      </div>
+
+      <div class="input-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" placeholder="Enter your email" required>
+      </div>
+
+      <div class="input-group">
+        <label for="password">Password</label>
+        <div class="password-wrapper">
+          <input type="password" id="password" placeholder="Enter your password" required>
+          <span class="toggle-password" onclick="togglePasswordVisibility('password', this)">
+            <i class="fas fa-eye"></i>
+          </span>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label for="confirm-password">Confirm Password</label>
+        <div class="password-wrapper">
+          <input type="password" id="confirm-password" placeholder="Confirm your password" required>
+          <span class="toggle-password" onclick="togglePasswordVisibility('confirm-password', this)">
+            <i class="fas fa-eye"></i>
+          </span>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label for="terms">
+          <input type="checkbox" id="terms" required> 
+          I agree to the <a href="#" id="terms-link">Terms and Conditions</a>
+        </label>
+      </div>
+
+      <!-- Google reCAPTCHA -->
+      <div class="g-recaptcha" data-sitekey="YOUR_SITE_KEY"></div>
+
+      <button type="submit">Create Account</button>
+    </form>
+
+    <!-- Login Link -->
+    <p>Already have an account? <a href="login.html">Login</a></p>
+    <p>Go Home: <a href="index.html">Home</a></p>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>© 2024 AppSphere. All rights reserved. <a href="privacy-policy.html">Privacy Policy</a></p>
+  </footer>
+
+  <script>
+    // Handle Registration
+    function register(event) {
+      event.preventDefault();
+
+      const username = document.getElementById("username").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const confirmPassword = document.getElementById("confirm-password").value.trim();
+      const termsAccepted = document.getElementById("terms").checked;
+
+      if (!username || !email || !password || !confirmPassword) {
+        showMessage("Please fill in all fields.", "error");
+        return;
+      }
+
+      if (!termsAccepted) {
+        showMessage("You must accept the Terms and Conditions to register.", "error");
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        showMessage("Passwords do not match.", "error");
+        return;
+      }
+
+      // Verify CAPTCHA is completed
+      const recaptchaResponse = grecaptcha.getResponse();
+      if (!recaptchaResponse) {
+        showMessage("Please complete the CAPTCHA.", "error");
+        return;
+      }
+
+      showMessage("Registration successful!", "success");
+      setTimeout(() => {
+        window.location.href = "payment.html";
+      }, 2000);
+    }
+
+    // Show messages to the user
+    function showMessage(message, type) {
+      const messageBox = document.getElementById("message-box");
+      messageBox.textContent = message;
+      messageBox.className = `message ${type}`;
+    }
+
+    // Toggle password visibility
+    function togglePasswordVisibility(inputId, iconElement) {
+      const input = document.getElementById(inputId);
+      const icon = iconElement.querySelector("i");
+
+      if (input.type === "password") {
+        input.type = "text";
+        icon.classList.replace("fa-eye", "fa-eye-slash");
+      } else {
+        input.type = "password";
+        icon.classList.replace("fa-eye-slash", "fa-eye");
+      }
+    }
+
+    // Initialize form submission
+    window.onload = () => {
+      document.getElementById("registration-form").addEventListener("submit", register);
+    };
+  </script>
+</body>
+</html>
